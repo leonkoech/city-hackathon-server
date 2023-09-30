@@ -4,6 +4,7 @@ import { getRandomDate, generateRandomBoolean, containsFalseField } from "./util
 
 export const APPLICATIONS = "applications";
 export const APPLICANTS = "applicants";
+//export const DOCUMENTATION = "documentations";
 
 export async function createApplication(application_id, applicant_id, is_complete){
     const steps = is_complete?Math.floor(Math.random()* 3):1;
@@ -16,10 +17,38 @@ export async function createApplication(application_id, applicant_id, is_complet
         webinar_date: getRandomDate(30),
         approved: generateRandomBoolean(),
         docs_provided: generateRandomBoolean(),
-        is_complete: is_complete
+        is_complete: is_complete,
+        documentation: createDocuments(),
     });
-   
+}
+
+function createDocuments(){
+    let collection = [];
+    const documents = [
+        "w2",
+        "utilities",
+        "id_license",
+        "bank_statements",
+        "other_account_statements",
+        "letter_from_employer",
+        "reference_letter",
+        "benefit_income_verification",
+        "recent_pay_stubs",
+        "credit_authorization",
+        "school_transcript"
+    ]
+
+    for(let document of documents){
+        collection.push({
+            doc_id: document,
+            doc_type: "pdf",
+            doc_name: document.split("_").join(" "),
+            is_completed: false,
+        })
     }
+
+    return collection;
+}
     
 export async function fetchCollection(collection_name){
     try{
