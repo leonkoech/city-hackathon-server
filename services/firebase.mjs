@@ -14,3 +14,15 @@ export async function test_database(){
         console.error("Error adding document: ", e);
         }
 }
+
+export async function fetchUsers(){
+    try{
+        const querySnapshot = await getDocs(collection(db, 'users'));
+        querySnapshot.forEach((i)=> {
+        console.log("what is i: ", i.data());
+    })
+    }
+    catch(e){
+        console.log(e)
+    }
+} 

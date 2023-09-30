@@ -1,5 +1,5 @@
 import express from "express"
-import { test_database } from './services/firebase.mjs';
+import { test_database, fetchUsers } from './services/firebase.mjs';
 
 const app = express();
 
@@ -9,11 +9,12 @@ const app = express();
 // Define a route
 app.get('/', (req, res) => {
   res.send('Hello, World!');
-  test_database();
+  //test_database();
+  fetchUsers();
 });
 
 // Start the server
-const PORT = process.env.PORT || 3000;
+const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
