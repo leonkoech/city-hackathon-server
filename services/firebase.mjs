@@ -1,6 +1,6 @@
 import { db } from "./database.mjs";
 import { collection, doc, addDoc, getDocs, setDoc, getDoc } from "firebase/firestore"; 
-import { getRandomDate, generateRandomBoolean } from "./utility.mjs";
+import { getRandomDate, generateRandomBoolean, containsFalseField } from "./utility.mjs";
 
 export const APPLICATIONS = "applications";
 export const APPLICANTS = "applicants";
@@ -61,8 +61,7 @@ export async function createApplicantsFirebase(applicant_list){
           console.log("completed");
             return "completed";
         }).catch((e)=>{
-           console.log("failed");
-             return String(e);
+            throw new Error(e)
         })
     }
     catch(e){
@@ -74,15 +73,63 @@ export async function createApplicantsFirebase(applicant_list){
 
 export async function SetApproval(isTrue, UID){
     const applicationRef = doc(db, APPLICATIONS, UID);
-    return await setDoc(applicationRef, { approved: isTrue}, { merge: true } );
+    return await setDoc(applicationRef, { approved: isTrue}, { merge: true } ).then((application)=>{
+        return application
+    }).catch((e)=>{
+        throw new Error(e)
+    })
 }
 
-export async function SetProvidedDocumentation(isTrue, UID){
-    const applicationRef = doc(db, APPLICATIONS, UID);
-    return await setDoc(applicationRef, { docs_provided: isTrue}, { merge: true } );
+export async function SetProvidedDocumentation(application_id){
+    const applicationRef = doc(db, APPLICATIONS, application_id);
+    const application_doc = await fetchDocument(APPLICATIONS, application_id)
+    const application_documentation = application_doc.data["documentation"]
+    const all_docs_provided = !containsFalseField(application_documentation)
+    const provided_docs_promise = []
+    
+    provided_docs_promise.push(await setDoc(applicationRef, { docs_provided: all_docs_provided}, { merge: true } ))
+     
+    if(all_docs_provided){
+        provided_docs_promise.push( await SetStep(application_id, 4))
+    }
+    return await Promise.all([...provided_docs_promise])
+    .then((application)=>{
+        return application
+    }).catch((e)=>{
+        throw new Error(e)
+    })
 }
 
-export async function SetStep(ID, stepNum){
-    const applicationRef = doc(db, APPLICATIONS, ID);
-    return await setDoc(applicationRef, { step: stepNum}, { merge: true } );
+export async function SetStep(application_id, stepNum){
+    const applicationRef = doc(db, APPLICATIONS, application_id);
+    return await setDoc(applicationRef, { step: stepNum}, { merge: true })
+    .then((application)=>{
+        return application
+    }).catch((e)=>{
+        throw new Error(e)
+    })
+}
+
+export async function updateDocumentation(application_id, document_id, is_submitted){
+    const applicationRef = doc(db, APPLICATIONS, application_id);
+    const application_doc = await fetchDocument(APPLICATIONS, application_id)
+    const application_documentation = application_doc.data["documentation"]
+    const application_documentation_copy = []
+    application_documentation.forEach((document)=>{
+        if(document.doc_id === document_id){
+            document.is_completed = is_submitted;
+        }
+        application_documentation_copy.push(document)
+    })
+
+    const documentation_promises = [
+         await setDoc(applicationRef, { documentation: application_documentation_copy}, { merge: true }),
+        await SetProvidedDocumentation(application_id),
+    ]
+     
+    return await Promise.all([...documentation_promises]).then((application)=>{
+        return application
+    }).catch((e)=>{
+        throw new Error(e)
+    })
 }

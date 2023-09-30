@@ -113,3 +113,14 @@ const names = [
     }
     return false;
   }
+
+  export function containsFalseField(list){
+    list.forEach((object) => {
+        for(let value of Object.values(object)){
+            if(!value){
+                return true;
+            }
+        }
+    });
+    return false;
+  }
