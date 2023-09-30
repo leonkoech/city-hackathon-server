@@ -48,6 +48,6 @@ export async function SetProvidedDocumentation(isTrue, UID){
 }
 
 export async function SetStep(ID, stepNum){
-    const applicationRef = doc(db, 'application_test', UID);
-    setDoc(applicationRef, { step: isTrue}, { merge: true } );
+    const applicationRef = doc(db, 'application_test', ID);
+    setDoc(applicationRef, { step: stepNum}, { merge: true } );
 }
