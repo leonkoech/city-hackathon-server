@@ -1,5 +1,5 @@
 import { db } from "./database.mjs";
-import { collection, addDoc } from "firebase/firestore"; 
+import { collection, addDoc, getDocs } from "firebase/firestore"; 
 
 
 export async function test_database(){
