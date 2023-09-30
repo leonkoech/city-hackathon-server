@@ -11,12 +11,12 @@ export async function test_database(){
 
         const docRef = await setDoc(doc(application_ref, doc_id), {
         UID: doc_id,
-        Applicant_ID: applicant_id,
-        Step: steps,
-        Webinar_Date: new Date(),
-        Approved: false,
-        Docs_Provided: false,
-        Is_Complete: false
+        applicant_ID: applicant_id,
+        step: steps,
+        webinar_date: new Date(),
+        approved: false,
+        docs_provided: false,
+        is_complete: false
     });
         console.log("Applicant created");
     } catch (e) {
@@ -44,10 +44,10 @@ export async function SetApproval(isTrue, UID){
 
 export async function SetProvidedDocumentation(isTrue, UID){
     const applicationRef = doc(db, 'application_test', UID);
-    setDoc(applicationRef, { docs_provided: true}, { merge: true } );
+    setDoc(applicationRef, { docs_provided: isTrue}, { merge: true } );
 }
 
 export async function SetStep(ID, stepNum){
     const applicationRef = doc(db, 'application_test', UID);
-    setDoc(applicationRef, { Step: true}, { merge: true } );
+    setDoc(applicationRef, { step: isTrue}, { merge: true } );
 }
