@@ -1,9 +1,15 @@
-const express = require('express');
+import express from "express"
+import { test_database } from './services/firebase.mjs';
+
 const app = express();
+
+
+
 
 // Define a route
 app.get('/', (req, res) => {
   res.send('Hello, World!');
+  test_database();
 });
 
 // Start the server
