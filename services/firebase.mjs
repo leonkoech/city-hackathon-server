@@ -36,3 +36,18 @@ export async function fetchUsers(){
         console.log(e)
     }
 } 
+
+export async function SetApproval(isTrue, UID){
+    const applicationRef = doc(db, 'application_test', UID);
+    setDoc(applicationRef, { approved: isTrue}, { merge: true } );
+}
+
+export async function SetProvidedDocumentation(isTrue, UID){
+    const applicationRef = doc(db, 'application_test', UID);
+    setDoc(applicationRef, { docs_provided: true}, { merge: true } );
+}
+
+export async function SetStep(ID, stepNum){
+    const applicationRef = doc(db, 'application_test', UID);
+    setDoc(applicationRef, { Step: true}, { merge: true } );
+}
