@@ -4,14 +4,10 @@ import {create_applicants} from "./services/applicant.mjs";
 
 const app = express();
 
-
-
-
 // Define a route
 app.get('/', (req, res) => {
-  res.send('Hello, World!');
-  //test_database();
-  fetchUsers();
+  res.send('you\'re on application test db');
+  test_database();
 });
 
 app.get("/create_applicants",  async (req, res) => {

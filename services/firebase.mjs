@@ -1,25 +1,35 @@
 import { db } from "./database.mjs";
-import { collection, addDoc, getDocs, setDoc, doc } from "firebase/firestore"; 
+import { collection, doc, addDoc, getDocs, setDoc } from "firebase/firestore"; 
 
 
 export async function test_database(){
     try {
-        const docRef = await addDoc(collection(db, "users"), {
-            first: "Ada",
-            last: "Lovelace",
-            born: 1815
-        });
-        console.log("Document written with ID: ", docRef.id);
-        } catch (e) {
+        const doc_id = String(Math.floor(Math.random()*100000000000));
+        const applicant_id = String(Math.floor(Math.random()*100000000000));
+        const steps = Math.floor(Math.random()* 3);
+        const application_ref = collection(db,"application_test")
+
+        const docRef = await setDoc(doc(application_ref, doc_id), {
+        UID: doc_id,
+        applicant_ID: applicant_id,
+        step: steps,
+        webinar_date: new Date(),
+        approved: false,
+        docs_provided: false,
+        is_complete: false
+    });
+        console.log("Applicant created");
+    } catch (e) {
         console.error("Error adding document: ", e);
-        }
-}
+    }
+    }
+    
 
 export async function fetchApplicants(){
     try{
         const querySnapshot = await getDocs(collection(db, 'applicants'));
         querySnapshot.forEach((i)=> {
-        console.log("what is i: ", i.data());
+        console.log("data: ", i.data());
     })
     }
     catch(e){
@@ -50,4 +60,19 @@ export async function create_applicants_firebase(applicant_list){
         console.log(e);
         return e
     }
+
+}
+export async function SetApproval(isTrue, UID){
+    const applicationRef = doc(db, 'application_test', UID);
+    setDoc(applicationRef, { approved: isTrue}, { merge: true } );
+}
+
+export async function SetProvidedDocumentation(isTrue, UID){
+    const applicationRef = doc(db, 'application_test', UID);
+    setDoc(applicationRef, { docs_provided: isTrue}, { merge: true } );
+}
+
+export async function SetStep(ID, stepNum){
+    const applicationRef = doc(db, 'application_test', ID);
+    setDoc(applicationRef, { step: stepNum}, { merge: true } );
 }
