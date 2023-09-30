@@ -2,8 +2,10 @@ import express from "express"
 import { fetchApplicants, fetchApplications, SetApproval, SetProvidedDocumentation, updateDocumentation } from './services/firebase.mjs';
 import {createApplicants} from "./services/applicant.mjs";
 import { createApplications } from "./services/application.mjs";
+import cors from "cors";
 
 const app = express();
+app.use(cors())
 
 // Define a route
 app.get('/', (req, res) => {
