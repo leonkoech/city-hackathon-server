@@ -1,12 +1,12 @@
 import { db } from "./database.mjs";
-import { collection, doc, addDoc, getDocs, setDoc } from "firebase/firestore"; 
+import { collection, doc, addDoc, getDocs, setDoc, getDoc } from "firebase/firestore"; 
 import { getRandomDate, generateRandomBoolean } from "./utility.mjs";
 
-const APPLICATIONS = "applications";
-const APPLICANTS = "applicants";
+export const APPLICATIONS = "applications";
+export const APPLICANTS = "applicants";
 
-export async function createApplication(application_id, applicant_id){
-    const steps = Math.floor(Math.random()* 3);
+export async function createApplication(application_id, applicant_id, is_complete){
+    const steps = is_complete?Math.floor(Math.random()* 3):1;
     const application_ref = collection(db,APPLICATIONS);
 
     return await setDoc(doc(application_ref, application_id), {
@@ -16,7 +16,7 @@ export async function createApplication(application_id, applicant_id){
         webinar_date: getRandomDate(30),
         approved: generateRandomBoolean(),
         docs_provided: generateRandomBoolean(),
-        is_complete: generateRandomBoolean()
+        is_complete: is_complete
     });
    
     }
@@ -34,6 +34,13 @@ export async function fetchCollection(collection_name){
         return []
     }
 } 
+
+export async function fetchDocument(collection_name, document_uid){
+    const docRef = doc(db, collection_name, document_uid);
+    const docSnap = await getDoc(docRef);
+    return { "data":docSnap.data(), "id": docSnap.id}
+}
+
 export async function fetchApplicants(){
     return await fetchCollection(APPLICANTS)
 } 

@@ -104,3 +104,12 @@ const names = [
     
     return randomDate;
   }
+
+  export function containsBlankField(object){
+    for(let values of Object.values(object)){
+        if(values === "" || values === undefined || values === null){
+            return true;
+        }
+    }
+    return false;
+  }
