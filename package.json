@@ -9,12 +9,12 @@
   "name": "city-hackathon-server",
   "version": "1.0.0",
   "description": "server for city hackathon team llamaa",
-  "main": "app.mjs",
+  "main": "api/index.mjs",
   "engines": {
     "node": "16.x"
   },
   "scripts": {
-    "start": "node app.mjs",
+    "start": "node api/index.mjs",
     "test": "node app.mjs"
   },
   "repository": {

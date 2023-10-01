@@ -1,7 +1,7 @@
 import express from "express"
-import { fetchApplicants, fetchApplications, SetApproval, SetProvidedDocumentation, updateDocumentation, fetchApplication, fetchApplicant } from './services/firebase.mjs';
-import {createApplicants} from "./services/applicant.mjs";
-import { createApplications } from "./services/application.mjs";
+import { fetchApplicants, fetchApplications, SetApproval, SetProvidedDocumentation, updateDocumentation, fetchApplication, fetchApplicant } from '../services/firebase.mjs';
+import {createApplicants} from "../services/applicant.mjs";
+import { createApplications } from "../services/application.mjs";
 import cors from "cors";
 
 const app = express();
