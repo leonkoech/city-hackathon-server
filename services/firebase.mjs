@@ -1,6 +1,6 @@
 import { db } from "./database.mjs";
 import { collection, doc, addDoc, getDocs, setDoc, getDoc } from "firebase/firestore"; 
-import { getRandomDate, generateRandomBoolean, containsFalseField } from "./utility.mjs";
+import { getRandomDate, generateRandomBoolean, getCurrentDateFormatted, containsFalseField } from "./utility.mjs";
 
 export const APPLICATIONS = "applications";
 export const APPLICANTS = "applicants";
@@ -65,9 +65,16 @@ export async function fetchCollection(collection_name){
 } 
 
 export async function fetchDocument(collection_name, document_uid){
-    const docRef = doc(db, collection_name, document_uid);
+    console.log(collection_name, document_uid);
+    const docRef = await doc(db, collection_name, document_uid);
     const docSnap = await getDoc(docRef);
-    return { "data":docSnap.data(), "id": docSnap.id}
+    if(docSnap.exists()){
+        return { "data":docSnap.data(), "id": docSnap.id}
+    }
+    else{
+        return false
+    }
+    
 }
 
 export async function fetchApplicants(){
@@ -159,6 +166,7 @@ export async function updateDocumentation(application_id, document_id, is_submit
     application_documentation.forEach((document)=>{
         if(document.doc_id === document_id){
             document.is_completed = is_submitted;
+            document.date_completed = getCurrentDateFormatted()
         }
         application_documentation_copy.push(document)
     })

@@ -20,6 +20,7 @@ app.get('/', (req, res) => {
 // });
 
 // app.get("/create_applications",  async (req, res) => {
+ 
 //   const result = await createApplications();
 //   console.log(result)
 //   res.send({data:result});
@@ -85,17 +86,6 @@ app.get('/fetch_applicant/:applicant_id', async(req,res)=>{
 
   res.status(201).json({ message: 'Data received successfully', data: documents });
 })
-
-
-app.get('/test', async (req, res) => {
-  const application_id = "04htle2Yb5RExEov";
-  const document_id = "w2";
-  const is_submitted = true;
-
-  const documents = await updateDocumentation(application_id, document_id, is_submitted)
-
-  res.status(201).json({ message: 'Data received successfully', data: documents });
-});
 
 
 // Start the server
