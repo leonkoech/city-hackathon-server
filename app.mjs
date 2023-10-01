@@ -1,5 +1,5 @@
 import express from "express"
-import { fetchApplicants, fetchApplications, SetApproval, SetProvidedDocumentation, updateDocumentation, fetchApplication } from './services/firebase.mjs';
+import { fetchApplicants, fetchApplications, SetApproval, SetProvidedDocumentation, updateDocumentation, fetchApplication, fetchApplicant } from './services/firebase.mjs';
 import {createApplicants} from "./services/applicant.mjs";
 import { createApplications } from "./services/application.mjs";
 import cors from "cors";
@@ -32,9 +32,20 @@ app.get('/applicants', async (req, res) => {
 });
 
 app.get('/applications', async (req, res) => {
-  const applications = await fetchApplications();
-  // res.send({data:applications})
-  res.status(201).json({ message: 'applications fetched successfully', data: applications });
+  try {
+    const applications = await fetchApplications();
+
+    const applicationDataPromises = applications.map(async (application) => {
+      const applicantData = await fetchApplicant(application.applicant_ID);
+      return { applicant_data: applicantData, application_data: application };
+    });
+
+    const applications_full = await Promise.all(applicationDataPromises);
+
+    res.status(200).json({ message: 'Applications fetched successfully', data: applications_full });
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching applications', error: error.message });
+  }
 });
 
 app.get('/setApproval/:uid/:is_approved', async (req, res) => {
@@ -62,6 +73,15 @@ app.get('/fetch_application/:application_id', async(req, res)=>{
   const application_id = data.application_id;
 
   const documents = await fetchApplication(application_id)
+
+  res.status(201).json({ message: 'Data received successfully', data: documents });
+})
+
+app.get('/fetch_applicant/:applicant_id', async(req,res)=>{
+  const data  = req.params;
+  const applicant_id = data.applicant_id;
+
+  const documents = await fetchApplicant(applicant_id)
 
   res.status(201).json({ message: 'Data received successfully', data: documents });
 })

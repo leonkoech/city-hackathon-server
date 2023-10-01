@@ -80,13 +80,13 @@ export async function fetchApplications(){
 
 export async function fetchApplicant(applicant_id){
     const applicant_data =  await fetchDocument(APPLICANTS, applicant_id);
-    return applicant_data
+    return applicant_data.data
 }
 
 export async function fetchApplication(application_id){
     const application_data =  await fetchDocument(APPLICATIONS, application_id);
     const applicant_data = await fetchApplicant(application_data.data.applicant_ID);
-    application_data.data.applicant_data = applicant_data.data;
+    application_data.data.applicant_data = applicant_data;
     return application_data.data
 }
 
