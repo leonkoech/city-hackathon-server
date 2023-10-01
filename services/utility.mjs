@@ -75,11 +75,11 @@ const names = [
     };
   
     // Randomly set some fields to empty
-    if (Math.random() < 0.25) obj.income_range = "";
-    if (Math.random() < 0.25) obj.type = "";
+    // if (Math.random() < 0.25) obj.income_range = "";
+    // if (Math.random() < 0.25) obj.type = "";
     if (Math.random() < 0.25) obj.married = null;
     if (Math.random() < 0.25) obj.dependents = null;
-    if (Math.random() < 0.25) obj.consistent_income = null;
+    // if (Math.random() < 0.25) obj.consistent_income = null;
   
     return obj;
   }
@@ -103,6 +103,14 @@ const names = [
     const randomDate = new Date(randomTimestamp);
     
     return randomDate;
+  }
+
+  export function getCurrentDateFormatted() {
+    const currentDate = new Date();
+    const mm = String(currentDate.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+    const dd = String(currentDate.getDate()).padStart(2, '0');
+    const yyyy = currentDate.getFullYear();
+    return `${mm}/${dd}/${yyyy}`;
   }
 
   export function containsBlankField(object){
