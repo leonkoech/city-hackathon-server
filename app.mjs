@@ -1,11 +1,12 @@
 import express from "express"
-import { fetchApplicants, fetchApplications, SetApproval, SetProvidedDocumentation, updateDocumentation } from './services/firebase.mjs';
+import { fetchApplicants, fetchApplications, SetApproval, SetProvidedDocumentation, updateDocumentation, fetchApplication } from './services/firebase.mjs';
 import {createApplicants} from "./services/applicant.mjs";
 import { createApplications } from "./services/application.mjs";
 import cors from "cors";
 
 const app = express();
-app.use(cors())
+
+app.use(cors());
 
 // Define a route
 app.get('/', (req, res) => {
@@ -36,25 +37,34 @@ app.get('/applications', async (req, res) => {
   res.status(201).json({ message: 'applications fetched successfully', data: applications });
 });
 
-app.post('/setApproval', async (req, res) => {
-  const { data } = req;
+app.get('/setApproval/:uid/:is_approved', async (req, res) => {
+  const data  = req.params;
   const UID = data.uid;
-  const is_approved= data.is_approved;
+  const is_approved= data.is_approved === "true"? true: false;
   const application = await SetApproval(is_approved, UID)
 
-  res.status(201).json({ message: 'approval set successfully', data: application });
+  res.status(201).json({ message: 'approval set successfully', application });
 });
 
-app.post('/updateDocuments', async (req, res) => {
-  const { data } = req;
+app.get('/updateDocuments/:application_id/:document_id/:is_submitted', async (req, res) => {
+  const data  = req.params;
   const application_id = data.application_id;
   const document_id = data.document_id;
-  const is_submitted = data.is_submitted;
+  const is_submitted = data.is_submitted === "true"? true: false;
 
   const documents = await updateDocumentation(application_id, document_id, is_submitted)
 
   res.status(201).json({ message: 'Data received successfully', data: documents });
 });
+
+app.get('/fetch_application/:application_id', async(req, res)=>{
+  const data  = req.params;
+  const application_id = data.application_id;
+
+  const documents = await fetchApplication(application_id)
+
+  res.status(201).json({ message: 'Data received successfully', data: documents });
+})
 
 
 app.get('/test', async (req, res) => {

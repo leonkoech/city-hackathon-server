@@ -78,6 +78,18 @@ export async function fetchApplications(){
     return await fetchCollection(APPLICATIONS)
 }
 
+export async function fetchApplicant(applicant_id){
+    const applicant_data =  await fetchDocument(APPLICANTS, applicant_id);
+    return applicant_data
+}
+
+export async function fetchApplication(application_id){
+    const application_data =  await fetchDocument(APPLICATIONS, application_id);
+    const applicant_data = await fetchApplicant(application_data.data.applicant_ID);
+    application_data.data.applicant_data = applicant_data.data;
+    return application_data.data
+}
+
 export async function createApplicantsFirebase(applicant_list){
     try {
         const promise_collection = []
